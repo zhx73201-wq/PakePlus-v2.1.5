@@ -1,36 +1,12 @@
 window.addEventListener("DOMContentLoaded",()=>{const t=document.createElement("script");t.src="https://www.googletagmanager.com/gtag/js?id=G-W5GKHM0893",t.async=!0,document.head.appendChild(t);const n=document.createElement("script");n.textContent="window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W5GKHM0893');",document.body.appendChild(n)});// very important, if you don't know what it is, don't touch it
 // 非常重要，不懂代码不要动，这里可以解决80%的问题，也可以生产1000+的bug
-
-//兼容
-// 添加closest和includes的polyfill
-if (!Element.prototype.closest) {
-    Element.prototype.closest = function(s) {
-        var el = this;
-        do {
-            if (el.matches(s)) return el;
-            el = el.parentElement || el.parentNode;
-        } while (el !== null && el.nodeType === 1);
-        return null;
-    };
-}
-
-// 替换includes为indexOf
-if (!String.prototype.includes) {
-    String.prototype.includes = function(search, start) {
-        if (typeof start !== 'number') start = 0;
-        if (start + search.length > this.length) return false;
-        return this.indexOf(search, start) !== -1;
-    };
-}
-function addMark(url) {
-    if (!url) return url;
-    try {
-        const urlObj = new URL(url, window.location.origin);
-        urlObj.searchParams.set('domin', domin);
-        return urlObj.toString();
-    } catch (e) {
-        // 兼容处理
-        return url;
+const addMark = (url) => {
+    if (!url) return url
+    if (url.includes('?domin='+domin)) return url
+    if (url.includes('?')&&url.includes('=')){
+       return url + '&domin='+domin
+    }else{
+       return url + '?domin='+domin 
     }
 }
 
@@ -69,7 +45,7 @@ function containsSubstring(mainStr, subStr, caseSensitive = true) {
 }
 
 var temp = window.location.host;
-if(containsSubstring(temp,"127.0.0.1:")){
+if(containsSubstring(temp,"tauri.localhost")){
   var domin = temp;
 }else{
   let urlParams = new URLSearchParams(window.location.search); // window.location.href
@@ -175,4 +151,3 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     })
 })
-
