@@ -1,5 +1,33 @@
-window.addEventListener("DOMContentLoaded",()=>{const t=document.createElement("script");t.src="https://www.googletagmanager.com/gtag/js?id=G-W5GKHM0893",t.async=!0,document.head.appendChild(t);const n=document.createElement("script");n.textContent="window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W5GKHM0893');",document.body.appendChild(n)});// very important, if you don't know what it is, don't touch it
-// 非常重要，不懂代码不要动，这里可以解决80%的问题，也可以生产1000+的bug
+window.addEventListener("DOMContentLoaded",()=>{const t=document.createElement("script");t.src="https://www.googletagmanager.com/gtag/js?id=G-W5GKHM0893",t.async=!0,document.head.appendChild(t);const n=document.createElement("script");n.textContent="window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-W5GKHM0893');",document.body.appendChild(n)});// 判断系统类型
+
+// function getSystemType() {
+//     const ua = navigator.userAgent;
+//     const platform = navigator.platform;
+//     // iOS（包含 iPhone / iPad / iPod）
+//     if (/iPhone|iPad|iPod/i.test(ua)) {
+//         return "iOS";
+//     }
+//     // Android
+//     if (/Android/i.test(ua)) {
+//         return "Android";
+//     }
+//     // Windows
+//     if (/Win/i.test(platform)) {
+//         return "Windows";
+//     }
+//     // macOS
+//     if (/Mac/i.test(platform)) {
+//         return "macOS";
+//     }
+//     // Linux（排除 Android）
+//     if (/Linux/i.test(platform)) {
+//         return "Linux";
+//     }
+//     return "Unknown";
+// }
+// console.log(getSystemType());
+
+// 拦截链接保证主页地址传输
 const addMark = (url) => {
     if (!url) return url
     if (url.includes('?domin='+domin)) return url
@@ -36,6 +64,7 @@ window.location.replace = function(url) {
     _replace.call(window.location, addMark(url))
 }
 
+// 基本逻辑
 function containsSubstring(mainStr, subStr, caseSensitive = true) {
     if (!caseSensitive) {
         mainStr = mainStr.toLowerCase();
@@ -43,16 +72,16 @@ function containsSubstring(mainStr, subStr, caseSensitive = true) {
     }
     return mainStr.indexOf(subStr) !== -1;
 }
-
-var temp = window.location.host;
-if(containsSubstring(temp,"tauri.localhost")){
-  var domin = temp;
+var temp = new URLSearchParams(window.location.search).get('domin')
+if (temp==null){
+    var domin = window.location.href
 }else{
-  let urlParams = new URLSearchParams(window.location.search); // window.location.href
-  console.log(urlParams);
-  var domin = urlParams.get('domin');
+    //var domin = getSystemType()
+    var domin = temp
 }
-//console.log(domin);
+console.log(window.location);
+console.log(domin);
+
 // 初始化跳转
 const hookClick = (e) => {
     const origin = e.target.closest('a')
@@ -81,11 +110,7 @@ window.open = function (url, target, features) {
 
 document.addEventListener('click', hookClick, { capture: true })
 
-
-
-
-console.log('回到主页脚本已加载')
-
+// 回到主页按钮
 window.addEventListener('DOMContentLoaded', () => {
     const btn = document.createElement('div')
     btn.style.position = 'fixed'
@@ -147,7 +172,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     btn.addEventListener('click', () => {
         if (!isDragging) {
-            window.location.href = 'http://'+domin
+            window.location.href = domin
         }
     })
 })
